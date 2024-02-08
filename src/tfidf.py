@@ -1,63 +1,44 @@
-"""
-Tfidf script
-"""
-from collections import Counter
+from collections import Counter, defaultdict
+from typing import List, Dict
 import numpy as np
 from tqdm import tqdm
-from nltk.tokenize import word_tokenize
 
-class TFiDFBuilder:
+class TfidfBuilder:
     """
-    Building tf-idf vector
+    tfidf builder
     """
-    def __init__(self, sentences: list) ->  None:
-        self.sentences = sentences
-        self.num_sentences = len(sentences)
+    def __init__(self, corpus: List[List[str]], words_set: List[str]) -> None:
+        self.corpus = corpus
+        self.words_set = words_set
+        self.flatten_corpus = [word for doc in corpus for word in doc]
+        self.n = len(corpus)
 
-    def get_unique_words(self) -> list:
+    def get_term_freq(self) -> Counter:
         """
-        get unique words from corpus
+        get term frequency
         """
-        unique_words = list(set(word_tokenize(" ".join(self.sentences))))
-        return unique_words
+        return Counter(self.flatten_corpus)
 
 
-    def get_tf(self, sentence: str) -> Counter:
+    def get_doc_freq(self) -> Dict[str, int]:
         """
-        Get term-frequency
+        get document frequency
         """
-        tf = Counter(word_tokenize(sentence))
-        return tf
+        inverted_index = defaultdict(set)
+        for docid, doc in tqdm(enumerate(self.corpus)):
+            for word in doc:
+                inverted_index[word].add(docid)
+        doc_freq = {
+            word: len(docids) for word, docids in inverted_index.items()
+        }
+        return doc_freq
 
 
-    def get_df(self, unique_words: list) -> Counter:
+    def get_tfidf(self) -> list:
         """
-        get document-frequency
+        get tfidf
         """
-        df = Counter()
-        for word in unique_words:
-            for sentence in self.sentences:
-                if word in word_tokenize(sentence):
-                    df[word] += 1
-        return df
-
-
-    def get_tfidf(self) -> dict:
-        """
-        get tf-idf vector based on given tf and idf
-        """
-        unique_words = self.get_unique_words()
-        tfidf = {}
-        df = self.get_df(unique_words)
-        for sentence in tqdm(self.sentences):
-            tf = self.get_tf(sentence)
-            for word in tf:
-                tfidf[word] = tf.get(word, 0) * np.log(self.num_sentences / df[word])
-        return tfidf
-
-
-if __name__ == "__main__":
-    with open("data/corpus.txt", "r", encoding="utf-8") as f:
-        corpus = f.readlines()
-    builder = TFiDFBuilder(corpus)
-    print(builder.get_tfidf())
+        tf_dict, df_dict = self.get_term_freq(), self.get_doc_freq()
+        return {
+            word: tf * np.log(self.n / (df_dict[word] + 1)) for word, tf in tf_dict.items()
+        }
