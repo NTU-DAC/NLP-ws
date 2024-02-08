@@ -161,3 +161,6 @@ cython_debug/
 
 # ckip mdl cfg
 model_data/
+
+# mac_files
+.DS_Store
