@@ -6,7 +6,7 @@
 * Lecturer: Abner Den
 * Slides: https://docs.google.com/presentation/d/1R_OlylidKAzj6d7jgHbmmUlMF86pCNoaMICYLjT55jU/edit?usp=sharing
 * Google Colab: https://docs.google.com/presentation/d/1R_OlylidKAzj6d7jgHbmmUlMF86pCNoaMICYLjT55jU/edit?usp=sharing
-* Slido:
+* Slido: https://app.sli.do/event/2JTCEqfJnppHurfPqzUmNN  | Events code: # nlp_ws
 
 ---
 
