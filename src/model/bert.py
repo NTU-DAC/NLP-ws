@@ -1,9 +1,9 @@
-import torch
-import torch.nn as nn
-import transformers
+from transformers import BertModel, BertTokenizer
 
 
-class MyBert(nn.Module):
-    def __init__(self, model_name, num_classes) -> None:
-        super(MyBert, self).__init__()
-        self.bert = transformers.BertModel.from_pretrained(model_name)
+if __name__ == "__main__":
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    model = BertModel.from_pretrained('bert-base-uncased')
+    TEXT = "Hello, my dog is cute"
+    embedded_word = tokenizer(TEXT, return_tensors="pt")
+    
